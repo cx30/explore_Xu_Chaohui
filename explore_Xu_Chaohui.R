@@ -264,4 +264,52 @@ plot_gray <- function(data, plotswitch='off') {
 
 
 
+
+#HW 8 Problem 1 Think about the ways things could go wrong and write some defensive code to gracefully 
+#handle exceptions.(for example, what if the first parameter is not a data frame?)
+def_function <- function(data,switch = 'on', threshold = 0, vector = NULL){
+  #this function is to handle exceptions when the parameters the user enter go wrong
+  new_data <- na.omit(data) #erase the NA row
+  if(!is.data.frame(new_data)) {   #check if new_data is a data frame, if new_data is not in the form of a data frame            
+    data_frame <- as.data.frame(new_data)  #coerce new_data into a data frame if it's not
+  }
+  
+  
+  while(switch != "off" && switch != "on" && switch != "grid") {   #check if the plotswitch is an valid input
+    print("invalid input for plotswitch") 
+    switch <- readline(prompt="Enter off/on/grid: ")  #readline reads what the user typed into the console
+  }
+  
+  while(!is.numeric(threshold) || threshold < 0 || threshold >1 ) {   #check if threshold is a valid input
+    print("Threshold must be a numeric number between 0 and 1")
+    threshold <- as.numeric(readline(prompt="Enter the threshold value: "))  
+  }
+  
+  if(!is.null(vector)) {
+    if(!is.numeric(vector)||(is.numeric(vector) && (TRUE %in% (vector <= 0)))) { #check if bin vector is numeric and not less than 0
+      print("the bins vector must be numeric vector and not less than 0, please enter new bins one by one and press 'return' at last to finish input")
+      vector <- c() #create an empty vector
+      bin <- 1
+      while(bin != "") {  #input "return" to finish loop
+        bin <- readline(prompt="Enter the number of bins: ")-> bin1 #re-enter the new bin vector
+        bin1 <- as.numeric(bin1)
+        vector <- c(vector, bin1)
+      }
+      vector <- na.omit(vector) #remove the NA rows
+    }
+    
+    
+    if (!is.integer(vector)) {   #Check if bins are integer
+      vector <- round(vector) #round the bins to integer if it's not
+    }
+  }
+  return(explore(new_data,switch,threshold,vector))
+}
+
+#Example
+def_function(diamonds,1,1.9,10)
+
+
+
+
   
